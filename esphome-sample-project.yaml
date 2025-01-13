@@ -1,0 +1,65 @@
+esphome:
+  name: scd30-esphome
+
+esp8266:
+  board: esp01_1m
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "SOMERANDOMKEY"
+
+# Used pins for the sensor
+i2c:
+  sda: GPIO04
+  scl: GPIO05
+
+wifi:
+  ssid: "YOUR_WIFI_SSID"
+  password: "YOUR_WIFI_PASSWORD"
+
+# for the built in history in the sensor use the history component from my fork
+# https://github.com/lrlunin/esphome/tree/history-container-component 
+
+sensor:
+  - platform: scd30
+    co2:
+      name: "SCD30 CO2"
+      accuracy_decimals: 1
+    temperature:
+      name: "SCD30 Temperature"
+      accuracy_decimals: 2
+    humidity:
+      name: "SCD30 Humidity"
+      accuracy_decimals: 1
+    # do not change this address, unless the datasheet for your sensor says so
+    address: 0x61
+    # input the temperature offset (see README) 
+    # temperature_offset: 4.24
+    # uncomment the line below if you want to manually calibrate the sensor
+    # automatic_self_calibration: false
+    # select any desired update interval
+    update_interval: 60s
+
+# uncomment the lines below if you want to manually calibrate the sensor
+# button:
+#   - platform: template
+#     name: "SCD30 Force manual calibration"
+#     entity_category: "config"
+#     on_press:
+#       then:
+#         - scd30.force_recalibration_with_reference:
+#             value: !lambda 'return id(co2_cal).state;'
+# number:
+#   - platform: template
+#     name: "CO2 calibration value"
+#     optimistic: true
+#     min_value: 350
+#     max_value: 4500
+#     step: 1
+#     id: co2_cal
+#     icon: "mdi:molecule-co2"
+#     entity_category: "config"
